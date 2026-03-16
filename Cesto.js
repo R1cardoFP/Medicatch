@@ -13,14 +13,6 @@ class Cesto {
 
 	atualizar() {
 		this.x += this.velocidadeX;
-
-		const meiaLargura = this.largura / 2;
-		const bateuEsquerda = this.x <= meiaLargura;
-		const bateuDireita = this.x >= this.larguraCanvas - meiaLargura;
-
-		if (bateuEsquerda || bateuDireita) {
-			this.velocidadeX *= -1;
-		}
 	}
 
 	desenhar() {

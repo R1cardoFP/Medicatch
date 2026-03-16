@@ -4,11 +4,14 @@ let hands = [];
 let cestoImg;
 let cesto;
 let mao;
+let estrelaImg;
+let estrelas = [];
 const LARGURA_CANVAS = 960;
 const ALTURA_CANVAS = 720;
 
 function preload() {
   cestoImg = loadImage('assets/cesto.png');
+  estrelaImg = loadImage('assets/estrela.png');
   handPose = ml5.handPose({ maxHands: 2, flipped: false });
 }
 
@@ -35,6 +38,10 @@ function setup() {
   cesto = new Cesto(cestoImg, width, height);
   mao = new Mao();
   handPose.detectStart(video, gotHands);
+
+  for (let i = 0; i < 5; i++) {
+    estrelas[i] = new Estrela(estrelaImg, width, height);
+  }
 }
 
 function draw() {
@@ -49,6 +56,18 @@ function draw() {
 
   cesto.atualizar();
   cesto.desenhar();
+
+  for (let estrela of estrelas) {
+    estrela.atualizar();
+    estrela.desenhar();
+
+    if (!estrela.ativa) {
+      estrela.y = -20;
+      estrela.x = random(20, width - 20);
+      estrela.velocidadeY = random(1, 3);
+      estrela.ativa = true;
+    }
+  }
 
   for (let i = 0; i < hands.length && i < 2; i++) {
     mao.desenhar(hands[i], width, true);
