@@ -50,7 +50,6 @@ class Mao {
     fill(255);
 
     // --- desenha uma bolinha em cada ponto valido da mao
-    
     for (const nomePonto in hand) {
       const ponto = hand[nomePonto];
         //--- verifica se existe o ponto e se o x e o y sao numeros validos
