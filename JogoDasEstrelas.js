@@ -1,8 +1,10 @@
 let video;
 let handPose;
 let hands = [];
+let handImg;
 
 function preload() {
+  handImg = loadImage('assets/mao.png');
   handPose = ml5.handPose();
 }
 
@@ -26,7 +28,7 @@ function setup() {
 
 function draw() {
   background(0);
-
+  imageMode(CORNER);
   image(video, 0, 0, width, height);
 
   if (hands.length > 0) {
@@ -39,13 +41,10 @@ function draw() {
     const palmaX = (pulso.x + baseIndicador.x + baseMedio.x + baseMindinho.x) / 4;
     const palmaY = (pulso.y + baseIndicador.y + baseMedio.y + baseMindinho.y) / 4;
 
-    noStroke();
-    fill(0, 255, 0);
-    circle(palmaX, palmaY, 20);
+    const fingerSpan = dist(baseIndicador.x, baseIndicador.y, baseMindinho.x, baseMindinho.y);
+    const handSize = fingerSpan * 2.0;
 
-    stroke(0, 255, 0);
-    strokeWeight(2);
-    noFill();
-    circle(palmaX, palmaY, 46);
+    imageMode(CENTER);
+    image(handImg, palmaX, palmaY, handSize, handSize);
   }
 }
