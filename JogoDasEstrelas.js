@@ -1,11 +1,15 @@
 let video;
 let handPose;
 let hands = [];
-let handImg;
+let cestoImg;
+let cesto;
+let mao;
+const LARGURA_CANVAS = 960;
+const ALTURA_CANVAS = 720;
 
 function preload() {
-  handImg = loadImage('assets/mao.png');
-  handPose = ml5.handPose();
+  cestoImg = loadImage('assets/cesto.png');
+  handPose = ml5.handPose({ maxHands: 2, flipped: false });
 }
 
 function gotHands(results) {
@@ -13,38 +17,40 @@ function gotHands(results) {
 }
 
 function setup() {
-  createCanvas(640, 480);
+  pixelDensity(1);
+  createCanvas(LARGURA_CANVAS, ALTURA_CANVAS);
 
   video = createCapture({
-    video: true,
+    video: {
+      width: LARGURA_CANVAS,
+      height: ALTURA_CANVAS,
+      facingMode: 'user',
+    },
     audio: false,
-  });
+  }); 
 
   video.size(width, height);
   video.hide();
 
+  cesto = new Cesto(cestoImg, width, height);
+  mao = new Mao();
   handPose.detectStart(video, gotHands);
 }
 
 function draw() {
   background(0);
+
+ 
   imageMode(CORNER);
+  translate(width, 0);
+  scale(-1, 1);
   image(video, 0, 0, width, height);
+  resetMatrix();
 
-  if (hands.length > 0) {
-    const hand = hands[0];
-    const pulso = hand.wrist;
-    const baseIndicador = hand.index_finger_mcp;
-    const baseMedio = hand.middle_finger_mcp;
-    const baseMindinho = hand.pinky_finger_mcp;
+  cesto.atualizar();
+  cesto.desenhar();
 
-    const palmaX = (pulso.x + baseIndicador.x + baseMedio.x + baseMindinho.x) / 4;
-    const palmaY = (pulso.y + baseIndicador.y + baseMedio.y + baseMindinho.y) / 4;
-
-    const fingerSpan = dist(baseIndicador.x, baseIndicador.y, baseMindinho.x, baseMindinho.y);
-    const handSize = fingerSpan * 2.0;
-
-    imageMode(CENTER);
-    image(handImg, palmaX, palmaY, handSize, handSize);
+  for (let i = 0; i < hands.length && i < 2; i++) {
+    mao.desenhar(hands[i], width, true);
   }
 }
